@@ -5,10 +5,10 @@ AR_FLAGS=rcs
 
 objdir=./obj
 libdir=./lib
-objects=${objdir}/utils.o ${objdir}/elfheader.o ${objdir}/programheader.o
-libs=${libdir}/libutils.a ${libdir}/libelfheader.a ${libdir}/libprogramheader.a
+objects=${objdir}/programheaderfactory.o
+libs=${libdir}/libprogramheaderfactory.a
 
-all: ${objdir} ${libdir} ${objects} ${libs}
+all: ${objdir} ${objects} ${libdir} ${libs}
 
 ${objdir}:
 	if [[ ! -d ${objdir} ]]; then mkdir ${objdir}; fi;
@@ -23,5 +23,5 @@ clean:
 ${objdir}/%.o: %.cc %.h
 	$(GCC) ${FLAGS} -c $< -o $@
 
-${libdir}/lib%.a: ${objdir}/%.o
+${libdir}/lib%.a: ${objdir}/%.o %.cc %.h
 	$(AR) ${AR_FLAGS} $@ $<

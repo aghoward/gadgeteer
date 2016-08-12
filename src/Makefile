@@ -1,16 +1,20 @@
 GCC=g++
-FLAGS=--std=c++11
+FLAGS=--std=c++11 -I./headers -I./factories -L./headers/lib -L./factories/lib
 
-objects=headers/obj/elfheader.o headers/obj/utils.o headers/obj/programheader.o
+objects=-lelfheader -lutils -lprogramheader -lprogramheaderfactory
 
-all: headers tester
+all: headerobjects factoryobjects tester
 
 headerobjects:
 	$(MAKE) -C headers
 
+factoryobjects:
+	$(MAKE) -C factories
+
 clean:
 	$(MAKE) clean -C headers
+	$(MAKE) clean -C factories
 	rm -f tester
 
-tester: tester.cc headerobjects
+tester: tester.cc headerobjects factoryobjects
 	$(GCC) ${FLAGS} -o $@ $< ${objects}

@@ -3,8 +3,9 @@
 #include <string>
 #include <fstream>
 
-#include "headers/elfheader.h"
-#include "headers/programheader.h"
+#include "elfheader.h"
+#include "programheader.h"
+#include "programheaderfactory.h"
 
 using namespace std;
 
@@ -19,15 +20,17 @@ int main(int argc, char * argv[]) {
         bail(string("Failed to load ") + string(argv[1]));
 
     auto header = ElfHeader(file);
-    file.seekg(header.program_offset);
-    auto progHeader = ProgramHeader(file, header.bitness, header.endianess);
+    auto programheaders = ProgramHeaderFactory::Create(file, header);
 
     file.close();
 
     cout << header.toString();
     cout << endl << endl;
-    cout << progHeader.toString();
-    cout << endl;
+
+    for (auto prog = programheaders.begin(); prog != programheaders.end(); prog++) {
+        cout << (*prog).toString();
+        cout << endl << endl;
+    }
 
     return 0;
 }

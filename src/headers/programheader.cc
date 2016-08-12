@@ -8,7 +8,7 @@ using namespace std;
 using namespace utils;
 
 void ProgramHeader::deserialize32(fstream &fd, ENDIANESS endianess) {
-    this->type = getBytes(fd, 4, endianess);
+    this->type = (PROGRAM_TYPE)getBytes(fd, 4, endianess);
     this->offset = getBytes(fd, 4, endianess);
     this->virtual_address = getBytes(fd, 4, endianess);
     this->physical_address = getBytes(fd, 4, endianess);
@@ -19,7 +19,7 @@ void ProgramHeader::deserialize32(fstream &fd, ENDIANESS endianess) {
 }
 
 void ProgramHeader::deserialize64(fstream &fd, ENDIANESS endianess) {
-    this->type = getBytes(fd, 4, endianess);
+    this->type = (PROGRAM_TYPE)getBytes(fd, 4, endianess);
     this->flags = getBytes(fd, 4, endianess);
     this->offset = getBytes(fd, 4, endianess);
     this->virtual_address = getBytes(fd, 4, endianess);
@@ -43,7 +43,7 @@ ProgramHeader::ProgramHeader(fstream &fd, BITNESS bitness, ENDIANESS endianess) 
 string ProgramHeader::toString() {
     auto ret = string();
 
-    ret += string("Type: " + to_string(type) + "\n");
+    ret += string("Type: " + to_hex(type) + "\n");
     ret += string("Offset: " + to_hex(offset) + "\n");
     ret += string("Virtual Address: " + to_hex(virtual_address) + "\n");
     ret += string("Physical Address: " + to_hex(physical_address) + "\n");

@@ -3,9 +3,13 @@
 #include <string>
 #include <fstream>
 
+#include "utils.h"
+
 #include "elfheader.h"
 #include "programheader.h"
 #include "programheaderfactory.h"
+#include "sectionheader.h"
+#include "sectionheaderfactory.h"
 
 using namespace std;
 
@@ -21,15 +25,23 @@ int main(int argc, char * argv[]) {
 
     auto header = ElfHeader(file);
     auto programheaders = ProgramHeaderFactory::Create(file, header);
-
+    auto sectionheaders = SectionHeaderFactory::Create(file, header);
     file.close();
 
     cout << header.toString();
     cout << endl << endl;
 
-    for (auto prog = programheaders.begin(); prog != programheaders.end(); prog++) {
-        cout << (*prog).toString();
-        cout << endl << endl;
+    auto progSections = utils::where<SectionHeader>(sectionheaders, [] (auto header) { return header.type == SECT_PROGRAM; });
+    auto execSections = utils::where<SectionHeader>(progSections, [] (auto header) { return header.flags & SECT_EXECUTE; });
+
+    cout << "Program Section count: " << progSections.size() << endl;
+    cout << "Executable Section count: " << execSections.size() << endl;
+
+    auto tofind = string("\xff\x35");
+    for (auto it = execSections.begin(); it != execSections.end(); it++) {
+        cout << it->toString() << endl << endl;
+        auto offset = it->contents.find(tofind);
+        cout << "Found bytes at offset: " << utils::to_hex(it->address + offset) << endl << endl;
     }
 
     return 0;

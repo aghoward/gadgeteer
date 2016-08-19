@@ -26,7 +26,6 @@ ElfHeader::ElfHeader(fstream& fd) {
     this->program_size = getBytes(fd, 2, this->endianess);
     this->program_entry_size = getBytes(fd, 2, this->endianess);
     this->program_entry_count = getBytes(fd, 2, this->endianess);
-    this->section_size = getBytes(fd, 2, this->endianess);
     this->section_entry_size = getBytes(fd, 2, this->endianess);
     this->section_entry_count = getBytes(fd, 2, this->endianess);
     this->section_name_index = getBytes(fd, 2, this->endianess);
@@ -47,7 +46,6 @@ string ElfHeader::toString() {
     ret += string("Program Size: " + to_string(program_size) + "\n");
     ret += string("Program Entry Size: " + to_string(program_entry_size) + "\n");
     ret += string("Program Entry Count: " + to_string(program_entry_count) + "\n");
-    ret += string("Section Size: " + to_string(section_size) + "\n");
     ret += string("Section Entry Size: " + to_string(section_entry_size) + "\n");
     ret += string("Section Entry Count: " + to_string(section_entry_count) + "\n");
     ret += string("Section Name Index: " + to_hex(section_name_index) + "\n");

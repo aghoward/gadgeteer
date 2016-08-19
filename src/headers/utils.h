@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <vector>
+#include <functional>
 
 using namespace std;
 
@@ -29,6 +31,16 @@ namespace utils {
     }
 
     unsigned long getBytes(fstream &fd, int num, ENDIANESS endianess);
+    string readString(fstream &fd);
+
+    template<typename T> vector<T> where(vector<T> list, function<bool (T)> matches) {
+        auto matching = vector<T>();
+        for(auto it = list.begin(); it != list.end(); it++) {
+            if (matches(*it))
+                matching.push_back(*it);
+        }
+        return matching;
+    }
 }
 
 #endif

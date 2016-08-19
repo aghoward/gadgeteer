@@ -34,7 +34,6 @@ class ElfHeader {
         unsigned short program_size;
         unsigned short program_entry_size;
         unsigned short program_entry_count;
-        unsigned short section_size;
         unsigned short section_entry_size;
         unsigned short section_entry_count;
         unsigned short section_name_index;

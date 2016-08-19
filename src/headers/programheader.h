@@ -9,23 +9,23 @@ using namespace std;
 using namespace utils;
 
 enum PROGRAM_TYPE {
-    NONE = 0x0,
-    LOADABLE = 0x1,
-    DYNAMIC = 0x2,
-    INTERPRETER = 0x3,
-    NOTE = 0x4,
-    LIBRARY = 0x5,
-    PROGRAMHEADER = 0x6,
-    OSLOW = 0x60000000,
-    OSHIGH = 0x6fffffff,
-    PROCLOW = 0x70000000,
-    PROCHIGH = 0x7fffffff
+    PROG_NONE = 0x0,
+    PROG_LOADABLE = 0x1,
+    PROG_DYNAMIC = 0x2,
+    PROG_INTERPRETER = 0x3,
+    PROG_NOTE = 0x4,
+    PROG_LIBRARY = 0x5,
+    PROG_PROGRAMHEADER = 0x6,
+    PROG_OSLOW = 0x60000000,
+    PROG_OSHIGH = 0x6fffffff,
+    PROG_PROCLOW = 0x70000000,
+    PROG_PROCHIGH = 0x7fffffff
 };
 
-enum FLAGS {
-    EXECUTE = 0x1,
-    WRITE = 0x2,
-    READ = 0x4
+enum PROGRAM_FLAGS {
+    PROG_EXECUTE = 0x1,
+    PROG_WRITE = 0x2,
+    PROG_READ = 0x4
 };
 
 class ProgramHeader {

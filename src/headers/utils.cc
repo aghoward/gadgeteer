@@ -24,4 +24,16 @@ namespace utils {
 
         return ret;
     }
+
+    string readString(fstream &fd) {
+        auto ret = string();
+        char c;
+
+        while (c != '\0') {
+            c = (char)(fd.get());
+            ret += c;
+        }
+
+        return ret;
+    }
 }

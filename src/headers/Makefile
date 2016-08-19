@@ -1,12 +1,12 @@
 GCC=g++
 AR=ar
-FLAGS=--std=c++11
+FLAGS=--std=c++14
 AR_FLAGS=rcs
 
 objdir=./obj
 libdir=./lib
-objects=${objdir}/utils.o ${objdir}/elfheader.o ${objdir}/programheader.o
-libs=${libdir}/libutils.a ${libdir}/libelfheader.a ${libdir}/libprogramheader.a
+objects=${objdir}/utils.o ${objdir}/elfheader.o ${objdir}/programheader.o ${objdir}/sectionheader.o
+libs=${libdir}/libutils.a ${libdir}/libelfheader.a ${libdir}/libprogramheader.a ${libdir}/libsectionheader.a
 
 all: ${objdir} ${libdir} ${objects} ${libs}
 

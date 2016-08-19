@@ -1,7 +1,7 @@
 GCC=g++
-FLAGS=--std=c++11 -I./headers -I./factories -L./headers/lib -L./factories/lib
+FLAGS=--std=c++14 -I./headers -I./factories -L./headers/lib -L./factories/lib
 
-objects=-lelfheader -lutils -lprogramheader -lprogramheaderfactory
+objects=-lelfheader -lutils -lprogramheaderfactory -lsectionheaderfactory -lprogramheader -lsectionheader 
 
 all: headerobjects factoryobjects tester
 

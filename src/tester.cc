@@ -5,33 +5,35 @@
 
 #include "utils.h"
 
-#include "elfheader.h"
-#include "programheader.h"
-#include "programheaderfactory.h"
-#include "sectionheader.h"
-#include "sectionheaderfactory.h"
+#include "failurereasons.h"
+#include "fileparser.h"
+#include "binaryfile.h"
 
 using namespace std;
 
 void bail(string message);
+string convertFailureReason(ParseFailure reason);
+void printInformation(BinaryFile binaryFile);
 
 int main(int argc, char * argv[]) {
     if (argc < 2)
         bail(string("Usage: ") + string(argv[0]) + string(" <elffile>"));
 
-    fstream file(argv[1], ios_base::in | ios_base::binary);
-    if (!file.is_open())
-        bail(string("Failed to load ") + string(argv[1]));
+    auto result = FileParser::Create(argv[1]);
 
-    auto header = ElfHeader(file);
-    auto programheaders = ProgramHeaderFactory::Create(file, header);
-    auto sectionheaders = SectionHeaderFactory::Create(file, header);
-    file.close();
+    result.Match<void>(
+        printInformation,
+        [] (ParseFailure reason) { bail(convertFailureReason(reason)); }
+    );
 
-    cout << header.toString();
+    return 0;
+}
+
+void printInformation(BinaryFile fileInfo) {
+    cout << fileInfo.elf_header.toString();
     cout << endl << endl;
 
-    auto progSections = utils::where<SectionHeader>(sectionheaders, [] (auto header) { return header.type == SECT_PROGRAM; });
+    auto progSections = utils::where<SectionHeader>(fileInfo.section_headers, [] (auto header) { return header.type == SECT_PROGRAM; });
     auto execSections = utils::where<SectionHeader>(progSections, [] (auto header) { return header.flags & SECT_EXECUTE; });
 
     cout << "Program Section count: " << progSections.size() << endl;
@@ -43,11 +45,25 @@ int main(int argc, char * argv[]) {
         auto offset = it->contents.find(tofind);
         cout << "Found bytes at offset: " << utils::to_hex(it->address + offset) << endl << endl;
     }
-
-    return 0;
 }
 
 void bail(string message) {
     cout << message << endl;
     exit(1);
+}
+
+string convertFailureReason(ParseFailure reason) {
+    switch(reason) {
+        case FileReadError:
+            return "I/O error on file";
+            break;
+        case InvalidFileFormat:
+            return "Invalid file format";
+            break;
+        case FileDoesNotExist:
+            return "File does not exist";
+            break;
+        default:
+            return "Unknown failure reason";
+    }
 }

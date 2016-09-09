@@ -32,7 +32,6 @@ enum SECTION_FLAGS {
 
 class SectionHeader {
     private:
-        void deserialize(fstream &fd, int wordSize, ENDIANESS endianess);
         string getTypeName();
         string getFlagString();
 
@@ -50,9 +49,8 @@ class SectionHeader {
         unsigned long entity_size;
         string contents;
 
-        SectionHeader(fstream &fd, BITNESS bitness, ENDIANESS endianess);
+        SectionHeader() {};
         string toString();
-        string getContents(fstream &fd);
 };
 
 #endif

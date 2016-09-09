@@ -7,39 +7,6 @@
 using namespace std;
 using namespace utils;
 
-void ProgramHeader::deserialize32(fstream &fd, ENDIANESS endianess) {
-    this->type = (PROGRAM_TYPE)getBytes(fd, 4, endianess);
-    this->offset = getBytes(fd, 4, endianess);
-    this->virtual_address = getBytes(fd, 4, endianess);
-    this->physical_address = getBytes(fd, 4, endianess);
-    this->file_size = getBytes(fd, 4, endianess);
-    this->memory_size = getBytes(fd, 4, endianess);
-    this->flags = getBytes(fd, 4, endianess);
-    this->alignment = getBytes(fd, 4, endianess);
-}
-
-void ProgramHeader::deserialize64(fstream &fd, ENDIANESS endianess) {
-    this->type = (PROGRAM_TYPE)getBytes(fd, 4, endianess);
-    this->flags = getBytes(fd, 4, endianess);
-    this->offset = getBytes(fd, 4, endianess);
-    this->virtual_address = getBytes(fd, 4, endianess);
-    this->physical_address = getBytes(fd, 4, endianess);
-    this->file_size = getBytes(fd, 4, endianess);
-    this->memory_size = getBytes(fd, 4, endianess);
-    this->alignment = getBytes(fd, 4, endianess);
-}
-
-ProgramHeader::ProgramHeader(fstream &fd, BITNESS bitness, ENDIANESS endianess) {
-    switch(bitness) {
-        case BITNESS_32:
-            deserialize32(fd, endianess);
-            break;
-        case BITNESS_64:
-            deserialize64(fd, endianess);
-            break;
-    }
-}
-
 string ProgramHeader::toString() {
     auto ret = string();
 

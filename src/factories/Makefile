@@ -5,8 +5,8 @@ AR_FLAGS=rcs
 
 objdir=./obj
 libdir=./lib
-objects=${objdir}/programheaderfactory.o ${objdir}/sectionheaderfactory.o
-libs=${libdir}/libprogramheaderfactory.a ${libdir}/libsectionheaderfactory.a
+objects=${objdir}/elfheaderfactory.o ${objdir}/programheaderfactory.o ${objdir}/sectionheaderfactory.o
+libs=${libdir}/libelfheaderfactory.a ${libdir}/libprogramheaderfactory.a ${libdir}/libsectionheaderfactory.a
 
 all: ${objdir} ${objects} ${libdir} ${libs}
 

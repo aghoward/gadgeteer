@@ -13,13 +13,6 @@ using namespace std;
 const int IDENT_CHARS = 0x10;
 
 class ElfHeader {
-    private:
-        string getIdentity(fstream &fd);
-        unsigned int getHalf(fstream &fd);
-        unsigned long getWord(fstream &fd);
-        void setBitness();
-        void setEndianess();
-
     public:
         string ident;
         BITNESS bitness;
@@ -38,7 +31,7 @@ class ElfHeader {
         unsigned short section_entry_count;
         unsigned short section_name_index;
 
-        ElfHeader(fstream& fd);
+        ElfHeader() {};
         string toString();
 
         string getBitness();

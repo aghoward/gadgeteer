@@ -29,10 +29,6 @@ enum PROGRAM_FLAGS {
 };
 
 class ProgramHeader {
-    private:
-        void deserialize32(fstream &fd, ENDIANESS endianess);
-        void deserialize64(fstream &fd, ENDIANESS endianess);
-
     public:
         PROGRAM_TYPE type;
         unsigned int offset;
@@ -43,7 +39,7 @@ class ProgramHeader {
         unsigned int flags;
         unsigned int alignment;
 
-        ProgramHeader(fstream &fd, BITNESS bitness, ENDIANESS endianess);
+        ProgramHeader() {};
         string toString();
 };
 

@@ -9,30 +9,6 @@
 using namespace std;
 using namespace utils;
 
-SectionHeader::SectionHeader(fstream &fd, BITNESS bitness, ENDIANESS endianess) {
-    switch(bitness) {
-        case BITNESS_32:
-            deserialize(fd, 4, endianess);
-            break;
-        case BITNESS_64:
-            deserialize(fd, 8, endianess);
-            break;
-    }
-}
-
-void SectionHeader::deserialize(fstream &fd, int wordSize, ENDIANESS endianess) {
-    this->name_offset = getBytes(fd, 4, endianess);
-    this->type = getBytes(fd, 4, endianess);
-    this->flags = getBytes(fd, wordSize, endianess);
-    this->address = getBytes(fd, wordSize, endianess);
-    this->file_offset = getBytes(fd, wordSize, endianess);
-    this->size = getBytes(fd, wordSize, endianess);
-    this->link = getBytes(fd, 4, endianess);
-    this->info = getBytes(fd, 4, endianess);
-    this->address_alignment = getBytes(fd, wordSize, endianess);
-    this->entity_size = getBytes(fd, wordSize, endianess);
-}
-
 string SectionHeader::toString() {
     string ret;
 
@@ -80,15 +56,4 @@ string SectionHeader::getFlagString() {
     if (this->flags & SECT_PROCESSOR)
         ret += "P";
     return ret;
-}
-
-string SectionHeader::getContents(fstream &fd) {
-    if (this->type == SECT_NONE || this->type == SECT_NOBITS)
-        return string();
-
-    fd.seekg(this->file_offset);
-    char buf[this->size + 1];
-
-    fd.get(buf, this->size);
-    return string(buf);
 }

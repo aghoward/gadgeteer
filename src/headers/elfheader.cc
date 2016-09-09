@@ -8,29 +8,6 @@
 using namespace std;
 using namespace utils;
 
-ElfHeader::ElfHeader(fstream& fd) {
-    fd.seekg(0, ios_base::beg);
-
-    this->ident = getIdentity(fd);
-
-    this->setBitness();
-    this->setEndianess();
-
-    this->type = getBytes(fd, 2, this->endianess);
-    this->machine = getBytes(fd, 2, this->endianess);
-    this->version = getBytes(fd, 4, this->endianess);
-    this->entry = getWord(fd);
-    this->program_offset = getWord(fd);
-    this->section_offset = getWord(fd);
-    this->flags = getBytes(fd, 4, this->endianess);
-    this->program_size = getBytes(fd, 2, this->endianess);
-    this->program_entry_size = getBytes(fd, 2, this->endianess);
-    this->program_entry_count = getBytes(fd, 2, this->endianess);
-    this->section_entry_size = getBytes(fd, 2, this->endianess);
-    this->section_entry_count = getBytes(fd, 2, this->endianess);
-    this->section_name_index = getBytes(fd, 2, this->endianess);
-}
-
 string ElfHeader::toString() {
     auto ret = string();
     ret += string("Identity: ") + ident + string("\n");
@@ -50,23 +27,6 @@ string ElfHeader::toString() {
     ret += string("Section Entry Count: " + to_string(section_entry_count) + "\n");
     ret += string("Section Name Index: " + to_hex(section_name_index) + "\n");
     return ret;
-}
-
-string ElfHeader::getIdentity(fstream& fd) {
-    char data[IDENT_CHARS];
-    fd.get(data, IDENT_CHARS);
-    fd.seekg(IDENT_CHARS);
-    return string(data);
-}
-
-void ElfHeader::setBitness() {
-    auto num = (int)((char)this->ident[4]);
-    this->bitness = (BITNESS)num;
-}
-
-void ElfHeader::setEndianess() {
-    auto num = (int)((char)this->ident[5]);
-    this->endianess = (ENDIANESS)num;
 }
 
 string ElfHeader::getBitness() {
@@ -93,15 +53,5 @@ string ElfHeader::getEndianess() {
         default:
             return string();
     }
-}
-
-unsigned int ElfHeader::getHalf(fstream& fd) {
-    auto half = (this->bitness == BITNESS_32) ? 2 : 4;
-    return getBytes(fd, half, this->endianess);
-}
-
-unsigned long ElfHeader::getWord(fstream& fd) {
-    auto word = (this->bitness == BITNESS_32) ? 4 : 8;
-    return getBytes(fd, word, this->endianess);
 }
 

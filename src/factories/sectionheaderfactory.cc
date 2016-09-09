@@ -3,10 +3,10 @@
 #include <vector>
 
 #include <iostream>
-#include "../headers/utils.h"
+#include "utils.h"
 
-#include "../headers/elfheader.h"
-#include "../headers/sectionheader.h"
+#include "headers/elfheader.h"
+#include "headers/sectionheader.h"
 #include "sectionheaderfactory.h"
 
 using namespace std;

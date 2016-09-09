@@ -1,9 +1,25 @@
 GCC=g++
-FLAGS=--std=c++14 -I./headers -I./factories -L./headers/lib -L./factories/lib
+AR=ar
+FLAGS=--std=c++14 -I. -I./headers -I./factories -L./lib -L./headers/lib -L./factories/lib
+AR_FLAGS=rcs
+objdir=./obj
+libdir=./lib
 
 objects=-lelfheader -lutils -lprogramheaderfactory -lsectionheaderfactory -lprogramheader -lsectionheader 
 
-all: headerobjects factoryobjects tester
+all: ${objdir} ${libdir} ${libdir}/libutils.a headerobjects factoryobjects tester
+
+${objdir}:
+	if [[ ! -d ${objdir} ]]; then mkdir ${objdir}; fi;
+
+${libdir}:
+	if [[ ! -d ${libdir} ]]; then mkdir ${libdir}; fi;
+
+${objdir}/%.o: %.cc %.h
+	$(GCC) ${FLAGS} -c $< -o $@
+
+${libdir}/lib%.a: ${objdir}/%.o
+	$(AR) ${AR_FLAGS} $@ $<
 
 headerobjects:
 	$(MAKE) -C headers

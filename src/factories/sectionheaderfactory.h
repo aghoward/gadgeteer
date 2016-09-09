@@ -4,8 +4,8 @@
 #include <fstream>
 #include <vector>
 
-#include "../headers/elfheader.h"
-#include "../headers/sectionheader.h"
+#include "headers/elfheader.h"
+#include "headers/sectionheader.h"
 
 using namespace std;
 

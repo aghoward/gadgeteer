@@ -1,6 +1,6 @@
 GCC=g++
 AR=ar
-FLAGS=--std=c++14 -I../headers -L../headers/lib
+FLAGS=--std=c++14 -I. -I../ -L../headers/lib
 AR_FLAGS=rcs
 
 objdir=./obj

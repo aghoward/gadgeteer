@@ -2,8 +2,8 @@
 #include <vector>
 
 #include "programheaderfactory.h"
-#include "../headers/programheader.h"
-#include "../headers/elfheader.h"
+#include "headers/programheader.h"
+#include "headers/elfheader.h"
 
 using namespace std;
 

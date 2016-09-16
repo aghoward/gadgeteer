@@ -18,15 +18,18 @@ Result<BinaryFile, ParseFailure> FileParser::Create(string filename) {
         return ResultFactory::CreateFailure<BinaryFile>(FileDoesNotExist);
 
     BinaryFile data;
+    auto result = createElfHeader(fd, data);
 
+    fd.close();
+    return result;
+}
+
+Result<BinaryFile, ParseFailure> FileParser::createElfHeader(fstream &fd, BinaryFile &returnData) {
     auto elfHeaderResult = ElfHeaderFactory::Create(fd);
     auto result = elfHeaderResult.Match<Result<BinaryFile, ParseFailure>>(
         [&fd, &data] (ElfHeader header) { data.elf_header = header; return createProgramHeaders(fd, data); },
         [] (ParseFailure failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
     );
-
-    fd.close();
-    return result;
 }
 
 Result<BinaryFile, ParseFailure> FileParser::createProgramHeaders(fstream &fd, BinaryFile &returnData) {

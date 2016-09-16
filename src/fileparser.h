@@ -12,6 +12,7 @@ using namespace std;
 
 class FileParser {
     private:
+        static Result<BinaryFile, ParseFailure> createElfHeader(fstream &fd, BinaryFile &data);
         static Result<BinaryFile, ParseFailure> createProgramHeaders(fstream &fd, BinaryFile &data);
         static Result<BinaryFile, ParseFailure> createSectionHeaders(fstream &fd, BinaryFile &data);
 

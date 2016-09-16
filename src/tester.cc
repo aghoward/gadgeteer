@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "utils.h"
+#include "qvector.h"
 
 #include "failurereasons.h"
 #include "fileparser.h"
@@ -33,8 +34,10 @@ void printInformation(BinaryFile fileInfo) {
     cout << fileInfo.elf_header.toString();
     cout << endl << endl;
 
-    auto progSections = utils::where<SectionHeader>(fileInfo.section_headers, [] (auto header) { return header.type == SECT_PROGRAM; });
-    auto execSections = utils::where<SectionHeader>(progSections, [] (auto header) { return header.flags & SECT_EXECUTE; });
+    cout << "Creating progSections" << endl;
+    auto progSections = fileInfo.section_headers.where([] (auto header) { return header.type == SECT_PROGRAM; });
+    cout << "Createing execSections" << endl;
+    auto execSections = progSections.where([] (auto header) { return header.flags & SECT_EXECUTE; });
 
     cout << "Program Section count: " << progSections.size() << endl;
     cout << "Executable Section count: " << execSections.size() << endl;

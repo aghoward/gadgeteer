@@ -1,9 +1,10 @@
 #include <string>
 #include <fstream>
-#include <vector>
 
 #include <iostream>
+
 #include "utils.h"
+#include "qvector.h"
 
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"
@@ -20,12 +21,12 @@ string getName(fstream &fd, SectionHeader strtab, unsigned long offset) {
     return readString(fd);
 }
 
-Result<vector<SectionHeader>, ParseFailure> SectionHeaderFactory::Create(fstream &fd, ElfHeader elf) {
-    auto headers = vector<SectionHeader>();
+Result<qvector<SectionHeader>, ParseFailure> SectionHeaderFactory::Create(fstream &fd, ElfHeader elf) {
+    auto headers = qvector<SectionHeader>();
 
     fd.seekg(elf.section_offset);
     if (!isFileOk(fd))
-        return ResultFactory::CreateFailure<vector<SectionHeader>>(FileReadError);
+        return ResultFactory::CreateFailure<qvector<SectionHeader>>(FileReadError);
 
     for(auto i=0; i<elf.section_entry_count; i++) {
         auto offset = elf.section_offset + (i * elf.section_entry_size);
@@ -33,7 +34,7 @@ Result<vector<SectionHeader>, ParseFailure> SectionHeaderFactory::Create(fstream
         headers.push_back(header);
 
         if (!isFileOk(fd))
-            return ResultFactory::CreateFailure<vector<SectionHeader>>(FileReadError);
+            return ResultFactory::CreateFailure<qvector<SectionHeader>>(FileReadError);
     }
 
     auto strtab = headers.at(elf.section_name_index);
@@ -42,10 +43,10 @@ Result<vector<SectionHeader>, ParseFailure> SectionHeaderFactory::Create(fstream
         it->contents = getContents(fd, *it);
 
         if (!isFileOk(fd))
-            return ResultFactory::CreateFailure<vector<SectionHeader>>(FileReadError);
+            return ResultFactory::CreateFailure<qvector<SectionHeader>>(FileReadError);
     }
 
-    return ResultFactory::CreateSuccess<vector<SectionHeader>, ParseFailure>(headers);
+    return ResultFactory::CreateSuccess<qvector<SectionHeader>, ParseFailure>(headers);
 }
 
 bool SectionHeaderFactory::isFileOk(fstream &fd) {

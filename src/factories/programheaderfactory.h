@@ -2,8 +2,8 @@
 #define ProgramHeaderFactory_H
 
 #include <fstream>
-#include <vector>
 
+#include "qvector.h"
 #include "headers/elfheader.h"
 #include "headers/programheader.h"
 #include "results/result.h"
@@ -19,7 +19,7 @@ class ProgramHeaderFactory {
         static ProgramHeader deserialize64(fstream &fd, ENDIANESS endianess);
 
     public:
-        static Result<vector<ProgramHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
+        static Result<qvector<ProgramHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
 };
 
 #endif

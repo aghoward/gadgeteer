@@ -38,9 +38,6 @@ Result<ElfHeader, ParseFailure> ElfHeaderFactory::Create(fstream& fd) {
     elf.section_entry_count = getBytes(fd, 2, elf.endianess);
     elf.section_name_index = getBytes(fd, 2, elf.endianess);
 
-    cout << "ElfHeaderFactory::Create created: " << endl;
-    cout << elf.toString() << endl;
-
     return ResultFactory::CreateSuccess<ElfHeader, ParseFailure>(elf);
 }
 

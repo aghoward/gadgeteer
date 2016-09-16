@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 
+#include "qvector.h"
 #include "fileparser.h"
 #include "binaryfile.h"
 #include "factories/elfheaderfactory.h"

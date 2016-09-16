@@ -1,6 +1,6 @@
 #include <fstream>
-#include <vector>
 
+#include "qvector.h"
 #include "programheaderfactory.h"
 #include "headers/programheader.h"
 #include "headers/elfheader.h"
@@ -12,20 +12,20 @@
 using namespace std;
 using namespace utils;
 
-Result<vector<ProgramHeader>, ParseFailure> ProgramHeaderFactory::Create(fstream &fd, ElfHeader elf) {
-    auto headers = vector<ProgramHeader>();
+Result<qvector<ProgramHeader>, ParseFailure> ProgramHeaderFactory::Create(fstream &fd, ElfHeader elf) {
+    auto headers = qvector<ProgramHeader>();
 
     for (auto i = 0; i < elf.program_entry_count; i++) {
         auto offset = elf.program_offset + (i * elf.program_entry_size);
         fd.seekg(offset);
         if (fd.bad() || fd.fail())
-            return ResultFactory::CreateFailure<vector<ProgramHeader>>(FileReadError);
+            return ResultFactory::CreateFailure<qvector<ProgramHeader>>(FileReadError);
 
         auto header = createSingle(fd, elf.bitness, elf.endianess);
         headers.push_back(header);
     }
 
-    return ResultFactory::CreateSuccess<vector<ProgramHeader>, ParseFailure>(headers);
+    return ResultFactory::CreateSuccess<qvector<ProgramHeader>, ParseFailure>(headers);
 }
 
 ProgramHeader ProgramHeaderFactory::deserialize32(fstream &fd, ENDIANESS endianess) {

@@ -2,8 +2,8 @@
 #define SectionHeaderFactory_H
 
 #include <fstream>
-#include <vector>
 
+#include "qvector.h"
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"
 #include "results/result.h"
@@ -20,7 +20,7 @@ class SectionHeaderFactory {
         static string getContents(fstream &fd, SectionHeader header);
 
     public:
-        static Result<vector<SectionHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
+        static Result<qvector<SectionHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
 };
 
 #endif

@@ -18,8 +18,8 @@ Result<BinaryFile, ParseFailure> FileParser::Create(string filename) {
     if (!fd.is_open())
         return ResultFactory::CreateFailure<BinaryFile>(FileDoesNotExist);
 
-    BinaryFile data;
-    auto result = createElfHeader(fd, data);
+    BinaryFile data = BinaryFile();
+    auto result = FileParser::createElfHeader(fd, data);
 
     fd.close();
     return result;
@@ -27,19 +27,24 @@ Result<BinaryFile, ParseFailure> FileParser::Create(string filename) {
 
 Result<BinaryFile, ParseFailure> FileParser::createElfHeader(fstream &fd, BinaryFile &returnData) {
     auto elfHeaderResult = ElfHeaderFactory::Create(fd);
-    auto result = elfHeaderResult.Match<Result<BinaryFile, ParseFailure>>(
-        [&fd, &data] (ElfHeader header) { data.elf_header = header; return createProgramHeaders(fd, data); },
-        [] (ParseFailure failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+    return elfHeaderResult.Match<Result<BinaryFile, ParseFailure>>(
+        [&fd, &returnData] (auto header) {
+            returnData.elf_header = header;
+            return FileParser::createProgramHeaders(fd, returnData);
+        },
+        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
     );
 }
 
 Result<BinaryFile, ParseFailure> FileParser::createProgramHeaders(fstream &fd, BinaryFile &returnData) {
-    cout << returnData.elf_header.toString() << endl;
     auto parseResult = ProgramHeaderFactory::Create(fd, returnData.elf_header);
 
     return parseResult.Match<Result<BinaryFile, ParseFailure>>(
-        [&fd, &returnData] (vector<ProgramHeader> headers) { returnData.program_headers = headers; return createSectionHeaders(fd, returnData); },
-        [] (ParseFailure failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+        [&fd, &returnData] (auto headers) {
+            returnData.program_headers = headers; 
+            return FileParser::createSectionHeaders(fd, returnData); 
+        },
+        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
     );
 }
 
@@ -47,7 +52,10 @@ Result<BinaryFile, ParseFailure> FileParser::createSectionHeaders(fstream &fd, B
     auto parseResult = SectionHeaderFactory::Create(fd, returnData.elf_header);
 
     return parseResult.Match<Result<BinaryFile, ParseFailure>>(
-        [&returnData] (vector<SectionHeader> headers) { returnData.section_headers = headers; return ResultFactory::CreateSuccess<BinaryFile, ParseFailure>(returnData); },
-        [] (ParseFailure failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+        [&returnData] (auto headers) { 
+            returnData.section_headers = headers;
+            return ResultFactory::CreateSuccess<BinaryFile, ParseFailure>(returnData); 
+        },
+        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
     );
 }

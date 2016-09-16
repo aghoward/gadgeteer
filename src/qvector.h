@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <functional>
+#include <iostream>
 
 template <class T>
 class qvector : public std::vector<T> {
@@ -34,6 +35,27 @@ class qvector : public std::vector<T> {
             }
 
             throw std::exception("Item not found!");
+        }
+
+        bool any(std::function<bool (T)> filter) {
+            for (auto it = this->begin(); it != this->end(); it++) {
+                if (filter(*it))
+                    return true;
+            }
+
+            return false;
+        }
+
+        template <class X>
+        qvector<T> distinct(std::function<X (T)> property) {
+            auto ret = qvector<T>();
+
+            for (auto it = this->begin(); it != this->end(); it++) {
+                if (!ret.any([&it, &property] (auto o) { return property(o) == property(*it); }))
+                    ret.push_back(*it);
+            }
+
+            return ret;
         }
 };
 

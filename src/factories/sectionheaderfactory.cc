@@ -79,8 +79,13 @@ string SectionHeaderFactory::getContents(fstream &fd, SectionHeader header) {
         return string();
 
     fd.seekg(header.file_offset);
-    char buf[header.size + 1];
+    auto output = string();
+    char singleByte;
 
-    fd.get(buf, header.size);
-    return string(buf);
+    for (auto i = 0; i < header.size; i++) {
+        fd >> singleByte;
+        output += singleByte;
+    }
+
+    return output;
 }

@@ -2,21 +2,30 @@
 #include <cstdio>
 #include <string>
 #include <fstream>
+#include <signal.h>
+#include <exception>
 
 #include "utils.h"
 #include "qvector.h"
+#include "errorhandler.h"
+#include "handlers.h"
 
 #include "failurereasons.h"
 #include "fileparser.h"
 #include "binaryfile.h"
+#include "gadgetfinder.h"
 
 using namespace std;
 
+void registerErrorHandlers();
 void bail(string message);
 string convertFailureReason(ParseFailure reason);
 void printInformation(BinaryFile binaryFile);
 
+
 int main(int argc, char * argv[]) {
+    registerErrorHandlers();
+
     if (argc < 2)
         bail(string("Usage: ") + string(argv[0]) + string(" <elffile>"));
 
@@ -30,24 +39,31 @@ int main(int argc, char * argv[]) {
     return 0;
 }
 
+
+void registerErrorHandlers() {
+    auto signals = vector<int>();
+    auto errorHandler = ErrorHandler();
+
+    signals.push_back(SIGINT);
+    signals.push_back(SIGSEGV);
+    signals.push_back(SIGILL);
+
+    errorHandler.RegisterSignals(signals, DefaultSignalHandler);
+    errorHandler.RegisterExceptionHandler(DefaultExceptionHandler);
+}
+
 void printInformation(BinaryFile fileInfo) {
-    cout << fileInfo.elf_header.toString();
-    cout << endl << endl;
+    cout << "total headers: " << fileInfo.section_headers.size() << endl;
 
-    cout << "Creating progSections" << endl;
-    auto progSections = fileInfo.section_headers.where([] (auto header) { return header.type == SECT_PROGRAM; });
-    cout << "Createing execSections" << endl;
-    auto execSections = progSections.where([] (auto header) { return header.flags & SECT_EXECUTE; });
+    auto matches = GadgetFinder::FindGadget(fileInfo, string("\x52\xc3"));
+    auto distinctHeaders = matches.distinct<string>([] (auto header) { return header.header.name; });
 
-    cout << "Program Section count: " << progSections.size() << endl;
-    cout << "Executable Section count: " << execSections.size() << endl;
+    cout << "Found " << matches.size() << " matches" << endl;
+    cout << "Found " << distinctHeaders.size() << " distinct header matches" << endl;
 
-    auto tofind = string("\xff\x35");
-    for (auto it = execSections.begin(); it != execSections.end(); it++) {
-        cout << it->toString() << endl << endl;
-        auto offset = it->contents.find(tofind);
-        cout << "Found bytes at offset: " << utils::to_hex(it->address + offset) << endl << endl;
-    }
+    for (auto header = distinctHeaders.begin(); header != distinctHeaders.end(); header++ )
+        cout << header->header.name << ": " << to_hex(header->offset) << endl;
+
 }
 
 void bail(string message) {

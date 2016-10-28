@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include <iostream>
+#include <stdexcept>
 
 template <class T>
 class qvector : public std::vector<T> {
@@ -25,7 +26,7 @@ class qvector : public std::vector<T> {
                     return *it;
             }
 
-            throw std::exception("Item not found!");
+            throw std::runtime_error("Item not found!");
         }
 
         T last(std::function<bool (T)> filter) {

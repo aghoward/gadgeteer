@@ -45,4 +45,4 @@ clean:
 	rm -f tester
 
 tester: tester.cc errorhandlerobjects headerobjects factoryobjects
-	$(GCC) ${FLAGS} -o $@ $< ${objects}
+	$(GCC) ${FLAGS} -rdynamic -o $@ $< ${objects}

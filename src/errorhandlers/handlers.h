@@ -13,6 +13,10 @@ using namespace std;
 
 void PrintBacktrace(vector<string> symbols);
 vector<string> GetBacktrace(int backtraceSize);
+string GetFriendlyName(char * mangled);
+string GetSubstring(string full, char begin, char end);
+string GetOriginatingFile(string fullname);
+string Demangle(string mangled);
 void ExceptionHandler(int backtraceSize);
 void InterruptHandler(int interrupt, int backtraceSize);
 void DefaultSignalHandler(int signal);

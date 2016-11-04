@@ -9,6 +9,7 @@
 class GadgetFinder {
     public:
         static qvector<HeaderMatch<SectionHeader>> FindGadget(BinaryFile fileInfo, string gadget);
+        static qvector<HeaderMatch<SectionHeader>> FindAllGadgets(BinaryFile fileInfo, qvector<string> gadgets);
 };
 
 

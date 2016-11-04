@@ -11,7 +11,7 @@
 class DefaultConverter : public Converter {
     public:
         DefaultConverter() : Converter("default") {};
-        string getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly);
+        qvector<string> getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly);
 };
 
 using namespace std;

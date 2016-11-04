@@ -1,6 +1,6 @@
 GCC=g++
 AR=ar
-FLAGS=--std=c++14 -I. -I./errorhandlers -I./headers -I./factories -I./results -I./parsing -L./lib -L./errorhandlers/lib -L./headers/lib -L./factories/lib -L./results/lib -L./parsing/lib
+FLAGS=--std=c++14 -I. -I./errorhandlers -I./headers -I./factories -I./results -I./parsing -I./parsing/models -I./parsing/converters -L./lib -L./errorhandlers/lib -L./headers/lib -L./factories/lib -L./results/lib -L./parsing/lib
 AR_FLAGS=rcs
 objdir=./obj
 libdir=./lib

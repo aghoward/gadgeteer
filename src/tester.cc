@@ -14,8 +14,12 @@
 #include "fileparser.h"
 #include "binaryfile.h"
 #include "gadgetfinder.h"
+#include "assemblyparserfactory.h"
 
 using namespace std;
+
+const string OPCODE_FILE = "opcodes.json";
+const string REGISTER_FILE = "registers.json";
 
 void registerErrorHandlers();
 void bail(string message);
@@ -54,11 +58,15 @@ void registerErrorHandlers() {
 
 void printInformation(BinaryFile fileInfo) {
     cout << "total headers: " << fileInfo.section_headers.size() << endl;
+    
+    auto assemblyParser = AssemblyParserFactory::create(OPCODE_FILE, REGISTER_FILE);
+    auto assemblies = assemblyParser.getBinaryString("pop *; ret");
+    cout << "Total number of assemblies: " << assemblies.size() << endl;
+    auto gadgets = GadgetFinder::FindAllGadgets(fileInfo, assemblies);
 
-    auto matches = GadgetFinder::FindGadget(fileInfo, string("\x52\xc3"));
-    auto distinctHeaders = matches.distinct<string>([] (auto header) { return header.header.name; });
+    auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header.name; });
 
-    cout << "Found " << matches.size() << " matches" << endl;
+    cout << "Found " << gadgets.size() << " matches" << endl;
     cout << "Found " << distinctHeaders.size() << " distinct header matches" << endl;
 
     for (auto header = distinctHeaders.begin(); header != distinctHeaders.end(); header++ )

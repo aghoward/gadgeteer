@@ -15,11 +15,14 @@ class AssemblyParser {
         qvector<Converter*> _converters;
 
         string getOperationString(string assembly);
+        qvector<string> parseSingleOperation(string assemblyString);
+        qvector<string> crossProduct(qvector<string> a, qvector<string> b);
+        qvector<string> splitOperations(string assembly);
 
     public:
         AssemblyParser(qvector<Opcode> opcodes, qvector<Register> registers);
         ~AssemblyParser();
-        string getBinaryString(string assemblyString);
+        qvector<string> getBinaryString(string assemblyString);
 
 };
 

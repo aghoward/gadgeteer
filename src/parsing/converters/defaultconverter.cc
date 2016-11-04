@@ -8,6 +8,12 @@
 
 using namespace std;
 
-string DefaultConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
-    return string("" + (char)opcode.opcode);
+qvector<string> DefaultConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
+    auto ret = qvector<string>();
+    auto entry = string();
+
+    entry += (char)(opcode.opcode);
+    ret.push_back(entry);
+
+    return ret;
 }

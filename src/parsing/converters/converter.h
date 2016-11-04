@@ -13,7 +13,7 @@ class Converter {
     public:
         string _function;
         Converter(string function) : _function(function) {};
-        virtual string getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) = 0;
+        virtual qvector<string> getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) = 0;
 };
 
 #endif

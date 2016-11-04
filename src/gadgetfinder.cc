@@ -30,3 +30,14 @@ qvector<HeaderMatch<SectionHeader>> GadgetFinder::FindGadget(BinaryFile fileInfo
 
     return result;
 }
+
+qvector<HeaderMatch<SectionHeader>> GadgetFinder::FindAllGadgets(BinaryFile fileInfo, qvector<string> gadgets) {
+    auto ret = qvector<HeaderMatch<SectionHeader>>();
+
+    for (auto gadget : gadgets) {
+        auto newGadgets = FindGadget(fileInfo, gadget);
+        ret.insert(ret.end(), newGadgets.begin(), newGadgets.end());
+    }
+
+    return ret;
+}

@@ -7,13 +7,29 @@
 
 using namespace std;
 
-string AddRegisterConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
+qvector<string> AddRegisterConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
+    auto ret = qvector<string>();
     auto baseValue = opcode.opcode;
     auto regName = getRegisterName(assembly);
-    auto reg = registers.first([regName] (auto r) { return r.name == regName; });
+    auto predicate = [regName] (Register r) { return r.name == regName; };
 
-    auto intValue = baseValue + reg.value;
-    return string("" + (char)intValue);
+    if (registers.any(predicate)) {
+        auto reg = registers.first(predicate);
+        ret.push_back(getValueForRegister(reg, baseValue));
+    }
+    else if (regName == "*") {
+        for (auto& it : registers) {
+            ret.push_back(getValueForRegister(it, baseValue));
+        }
+    }
+
+    return ret;
+}
+
+string AddRegisterConverter::getValueForRegister(Register reg, int baseValue) {
+    auto ret = string();
+    ret += (char)(baseValue + reg.value);
+    return ret;
 }
 
 string AddRegisterConverter::getRegisterName(string assembly) {

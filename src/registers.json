@@ -1,0 +1,34 @@
+[
+    {
+        "name": "%rax",
+        "value": 0
+    },
+    {
+        "name": "%rcx",
+        "value": 1
+    },
+    {
+        "name": "%rdx",
+        "value": 2
+    },
+    {
+        "name": "%rbx",
+        "value": 3
+    },
+    {
+        "name": "%rsp",
+        "value": 4
+    },
+    {
+        "name": "%rbp",
+        "value": 5
+    },
+    {
+        "name": "%rsi",
+        "value": 6
+    },
+    {
+        "name": "%rdi",
+        "value": 7
+    }
+]

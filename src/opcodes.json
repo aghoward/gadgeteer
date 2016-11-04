@@ -1,0 +1,11 @@
+[
+    {
+        "name": "ret",
+        "opcode": "c3"
+    },
+    {
+        "name": "pop",
+        "opcode": "58",
+        "operation": "addRegister"
+    }
+]

@@ -2,6 +2,7 @@
 #define FileParser_H
 
 #include <fstream>
+#include <memory>
 #include <string>
 
 #include "binaryfile.h"
@@ -12,12 +13,12 @@ using namespace std;
 
 class FileParser {
     private:
-        static Result<BinaryFile, ParseFailure> createElfHeader(fstream &fd, BinaryFile &data);
-        static Result<BinaryFile, ParseFailure> createProgramHeaders(fstream &fd, BinaryFile &data);
-        static Result<BinaryFile, ParseFailure> createSectionHeaders(fstream &fd, BinaryFile &data);
+        static Result<shared_ptr<BinaryFile>, ParseFailure> createElfHeader(fstream &fd, shared_ptr<BinaryFile> data);
+        static Result<shared_ptr<BinaryFile>, ParseFailure> createProgramHeaders(fstream &fd, shared_ptr<BinaryFile> data);
+        static Result<shared_ptr<BinaryFile>, ParseFailure> createSectionHeaders(fstream &fd, shared_ptr<BinaryFile> data);
 
     public:
-        static Result<BinaryFile, ParseFailure> Create(string filename);
+        static Result<shared_ptr<BinaryFile>, ParseFailure> Create(string filename);
 };
 
 #endif

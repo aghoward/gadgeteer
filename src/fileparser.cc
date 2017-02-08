@@ -1,6 +1,7 @@
 #include <fstream>
-#include <string>
 #include <iostream>
+#include <memory>
+#include <string>
 
 #include "qvector.h"
 #include "fileparser.h"
@@ -13,49 +14,49 @@
 
 using namespace std;
 
-Result<BinaryFile, ParseFailure> FileParser::Create(string filename) {
+Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::Create(string filename) {
     fstream fd(filename, ios::in | ios::binary);
     if (!fd.is_open())
-        return ResultFactory::CreateFailure<BinaryFile>(FileDoesNotExist);
+        return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(FileDoesNotExist);
 
-    BinaryFile data = BinaryFile();
+    auto data = shared_ptr<BinaryFile>(new BinaryFile());
     auto result = FileParser::createElfHeader(fd, data);
 
     fd.close();
     return result;
 }
 
-Result<BinaryFile, ParseFailure> FileParser::createElfHeader(fstream &fd, BinaryFile &returnData) {
+Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createElfHeader(fstream &fd, shared_ptr<BinaryFile> returnData) {
     auto elfHeaderResult = ElfHeaderFactory::Create(fd);
-    return elfHeaderResult.Match<Result<BinaryFile, ParseFailure>>(
+    return elfHeaderResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
         [&fd, &returnData] (auto header) {
-            returnData.elf_header = header;
+            returnData->elf_header = header;
             return FileParser::createProgramHeaders(fd, returnData);
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
     );
 }
 
-Result<BinaryFile, ParseFailure> FileParser::createProgramHeaders(fstream &fd, BinaryFile &returnData) {
-    auto parseResult = ProgramHeaderFactory::Create(fd, returnData.elf_header);
+Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createProgramHeaders(fstream &fd, shared_ptr<BinaryFile> returnData) {
+    auto parseResult = ProgramHeaderFactory::Create(fd, returnData->elf_header);
 
-    return parseResult.Match<Result<BinaryFile, ParseFailure>>(
+    return parseResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
         [&fd, &returnData] (auto headers) {
-            returnData.program_headers = headers; 
+            returnData->program_headers = headers; 
             return FileParser::createSectionHeaders(fd, returnData); 
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
     );
 }
 
-Result<BinaryFile, ParseFailure> FileParser::createSectionHeaders(fstream &fd, BinaryFile &returnData) {
-    auto parseResult = SectionHeaderFactory::Create(fd, returnData.elf_header);
+Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createSectionHeaders(fstream &fd, shared_ptr<BinaryFile> returnData) {
+    auto parseResult = SectionHeaderFactory::Create(fd, returnData->elf_header);
 
-    return parseResult.Match<Result<BinaryFile, ParseFailure>>(
+    return parseResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
         [&returnData] (auto headers) { 
-            returnData.section_headers = headers;
-            return ResultFactory::CreateSuccess<BinaryFile, ParseFailure>(returnData); 
+            returnData->section_headers = headers;
+            return ResultFactory::CreateSuccess<shared_ptr<BinaryFile>, ParseFailure>(returnData); 
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<BinaryFile>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
     );
 }

@@ -24,19 +24,20 @@ const string REGISTER_FILE = "registers.json";
 void registerErrorHandlers();
 void bail(string message);
 string convertFailureReason(ParseFailure reason);
-void printInformation(BinaryFile binaryFile);
+void printInformation(shared_ptr<BinaryFile> binaryFile, string toFind);
 
 
 int main(int argc, char * argv[]) {
     registerErrorHandlers();
 
-    if (argc < 2)
-        bail(string("Usage: ") + string(argv[0]) + string(" <elffile>"));
+    if (argc < 3)
+        bail(string("Usage: ") + string(argv[0]) + string(" <elffile> <toFind>"));
 
     auto result = FileParser::Create(argv[1]);
+    auto toFind = string(argv[2]);
 
     result.Match<void>(
-        printInformation,
+        [toFind] (auto fileInfo) { printInformation(fileInfo, toFind); },
         [] (ParseFailure reason) { bail(convertFailureReason(reason)); }
     );
 
@@ -56,11 +57,11 @@ void registerErrorHandlers() {
     errorHandler.RegisterExceptionHandler(DefaultExceptionHandler);
 }
 
-void printInformation(BinaryFile fileInfo) {
-    cout << "total headers: " << fileInfo.section_headers.size() << endl;
+void printInformation(shared_ptr<BinaryFile> fileInfo, string toFind) {
+    cout << "total headers: " << fileInfo->section_headers.size() << endl;
     
     auto assemblyParser = AssemblyParserFactory::create(OPCODE_FILE, REGISTER_FILE);
-    auto assemblies = assemblyParser.getBinaryString("pop *; ret");
+    auto assemblies = assemblyParser.getBinaryString(toFind);
     cout << "Total number of assemblies: " << assemblies.size() << endl;
     auto gadgets = GadgetFinder::FindAllGadgets(fileInfo, assemblies);
 

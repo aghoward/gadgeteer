@@ -6,7 +6,7 @@ AR_FLAGS=rcs
 objdir=./obj
 libdir=./lib
 objects=${objdir}/elfheaderfactory.o ${objdir}/programheaderfactory.o ${objdir}/sectionheaderfactory.o
-libs=${libdir}/libelfheaderfactory.a ${libdir}/libprogramheaderfactory.a ${libdir}/libsectionheaderfactory.a
+libs=${libdir}/libfactories.a
 
 all: ${objdir} ${objects} ${libdir} ${libs}
 
@@ -23,5 +23,5 @@ clean:
 ${objdir}/%.o: %.cc %.h
 	$(GCC) ${FLAGS} -c $< -o $@ ${externallinks}
 
-${libdir}/lib%.a: ${objdir}/%.o %.cc %.h
-	$(AR) ${AR_FLAGS} $@ $<
+${libdir}/lib%.a: ${objects} 
+	$(AR) ${AR_FLAGS} $@ $?

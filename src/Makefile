@@ -5,7 +5,7 @@ AR_FLAGS=rcs
 objdir=./obj
 libdir=./lib
 
-objects=-lerrorhandler -lelfheader -lfileparser -lgadgetfinder -lelfheaderfactory -lprogramheaderfactory -lsectionheaderfactory -lprogramheader -lsectionheader -lbinaryfile -lparsing -lresultfactory -lresult -lutils
+objects=-lerrorhandler -lheaders -lfileparser -lgadgetfinder -lfactories -lbinaryfile -lparsing -lresultfactory -lresult -lutils
 
 all: ${objdir} ${libdir} ${libdir}/libutils.a ${libdir}/libbinaryfile.a ${libdir}/libfileparser.a ${libdir}/libgadgetfinder.a errorhandlerobjects headerobjects factoryobjects parsingobjects resultobjects tester
 

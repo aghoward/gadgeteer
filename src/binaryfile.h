@@ -1,6 +1,8 @@
 #ifndef BinaryFile_H
 #define BinaryFile_H
 
+#include <memory>
+
 #include "qvector.h"
 
 #include "headers/elfheader.h"
@@ -11,12 +13,12 @@ using namespace std;
 
 class BinaryFile {
     public:
-        ElfHeader elf_header;
-        qvector<ProgramHeader> program_headers;
-        qvector<SectionHeader> section_headers;
+        shared_ptr<ElfHeader> elf_header;
+        qvector<shared_ptr<ProgramHeader>> program_headers;
+        qvector<shared_ptr<SectionHeader>> section_headers;
 
         BinaryFile() {};
-        BinaryFile(ElfHeader elf, qvector<ProgramHeader> programHeaders, qvector<SectionHeader> sectionHeaders);
+        BinaryFile(shared_ptr<ElfHeader> elf, qvector<shared_ptr<ProgramHeader>> programHeaders, qvector<shared_ptr<SectionHeader>> sectionHeaders);
 };
 
 #endif

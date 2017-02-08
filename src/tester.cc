@@ -64,13 +64,13 @@ void printInformation(BinaryFile fileInfo) {
     cout << "Total number of assemblies: " << assemblies.size() << endl;
     auto gadgets = GadgetFinder::FindAllGadgets(fileInfo, assemblies);
 
-    auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header.name; });
+    auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header->name; });
 
     cout << "Found " << gadgets.size() << " matches" << endl;
     cout << "Found " << distinctHeaders.size() << " distinct header matches" << endl;
 
     for (auto header = distinctHeaders.begin(); header != distinctHeaders.end(); header++ )
-        cout << header->header.name << ": " << to_hex(header->offset) << endl;
+        cout << header->header->name << ": " << to_hex(header->offset) << endl;
 
 }
 

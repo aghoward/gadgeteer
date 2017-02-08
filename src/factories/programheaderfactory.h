@@ -2,6 +2,7 @@
 #define ProgramHeaderFactory_H
 
 #include <fstream>
+#include <memory>
 
 #include "qvector.h"
 #include "headers/elfheader.h"
@@ -14,12 +15,12 @@ using namespace std;
 
 class ProgramHeaderFactory {
     private:
-        static ProgramHeader createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
-        static ProgramHeader deserialize32(fstream &fd, ENDIANESS endianess);
-        static ProgramHeader deserialize64(fstream &fd, ENDIANESS endianess);
+        static shared_ptr<ProgramHeader> createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
+        static shared_ptr<ProgramHeader> deserialize32(fstream &fd, ENDIANESS endianess);
+        static shared_ptr<ProgramHeader> deserialize64(fstream &fd, ENDIANESS endianess);
 
     public:
-        static Result<qvector<ProgramHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
+        static Result<qvector<shared_ptr<ProgramHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define SectionHeaderFactory_H
 
 #include <fstream>
+#include <memory>
 
 #include "qvector.h"
 #include "headers/elfheader.h"
@@ -15,12 +16,12 @@ using namespace std;
 class SectionHeaderFactory {
     private:
         static bool isFileOk(fstream &fd);
-        static SectionHeader createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
-        static SectionHeader deserialize(fstream &fd, int wordSize, ENDIANESS endianess);
-        static string getContents(fstream &fd, SectionHeader header);
+        static shared_ptr<SectionHeader> createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
+        static shared_ptr<SectionHeader> deserialize(fstream &fd, int wordSize, ENDIANESS endianess);
+        static string getContents(fstream &fd, shared_ptr<SectionHeader> header);
 
     public:
-        static Result<qvector<SectionHeader>, ParseFailure> Create(fstream &fd, ElfHeader elf);
+        static Result<qvector<shared_ptr<SectionHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include <memory>
 #include <string>
 
-#include "qvector.h"
+#include "queryalgorithms.h"
 #include "gadgetfinder.h"
 #include "binaryfile.h"
 #include "headermatch.h"
@@ -11,13 +11,11 @@
 
 using namespace std;
 
-qvector<HeaderMatch<shared_ptr<SectionHeader>>> GadgetFinder::FindGadget(shared_ptr<BinaryFile> fileInfo, string gadget) {
-    auto result = qvector<HeaderMatch<shared_ptr<SectionHeader>>>();
+vector<HeaderMatch<shared_ptr<SectionHeader>>> GadgetFinder::FindGadget(shared_ptr<BinaryFile> fileInfo, string gadget) {
+    auto result = vector<HeaderMatch<shared_ptr<SectionHeader>>>();
 
-    auto headers = fileInfo->section_headers
-        .where([] (auto header) { return header->type == SECT_PROGRAM; })
-        .where([] (auto header) { return header->flags & SECT_EXECUTE; })
-        .where([&gadget] (auto header) { return header->contents.find(gadget) != string::npos; });
+    auto executableHeaders = filter(fileInfo->section_headers, [] (auto header) { return header->flags & SECT_EXECUTE && header->type == SECT_PROGRAM; });
+    auto headers = filter(executableHeaders, [&gadget] (auto header) { return header->contents.find(gadget) != string::npos; });
 
     for (auto header: headers) {
         auto contents = string(header->contents);
@@ -32,8 +30,8 @@ qvector<HeaderMatch<shared_ptr<SectionHeader>>> GadgetFinder::FindGadget(shared_
     return result;
 }
 
-qvector<HeaderMatch<shared_ptr<SectionHeader>>> GadgetFinder::FindAllGadgets(shared_ptr<BinaryFile> fileInfo, qvector<string> gadgets) {
-    auto ret = qvector<HeaderMatch<shared_ptr<SectionHeader>>>();
+vector<HeaderMatch<shared_ptr<SectionHeader>>> GadgetFinder::FindAllGadgets(shared_ptr<BinaryFile> fileInfo, vector<string> gadgets) {
+    auto ret = vector<HeaderMatch<shared_ptr<SectionHeader>>>();
 
     for (auto gadget : gadgets) {
         auto newGadgets = FindGadget(fileInfo, gadget);

@@ -5,7 +5,6 @@
 
 
 #include "utils.h"
-#include "qvector.h"
 
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"
@@ -22,12 +21,12 @@ string getName(fstream &fd, shared_ptr<SectionHeader> strtab, unsigned long offs
     return readString(fd);
 }
 
-Result<qvector<shared_ptr<SectionHeader>>, ParseFailure> SectionHeaderFactory::Create(fstream &fd, shared_ptr<ElfHeader> elf) {
-    auto headers = qvector<shared_ptr<SectionHeader>>();
+Result<vector<shared_ptr<SectionHeader>>, ParseFailure> SectionHeaderFactory::Create(fstream &fd, shared_ptr<ElfHeader> elf) {
+    auto headers = vector<shared_ptr<SectionHeader>>();
 
     fd.seekg(elf->section_offset);
     if (!isFileOk(fd))
-        return ResultFactory::CreateFailure<qvector<shared_ptr<SectionHeader>>>(FileReadError);
+        return ResultFactory::CreateFailure<vector<shared_ptr<SectionHeader>>>(FileReadError);
 
     for(auto i=0; i<elf->section_entry_count; i++) {
         auto offset = elf->section_offset + (i * elf->section_entry_size);
@@ -35,7 +34,7 @@ Result<qvector<shared_ptr<SectionHeader>>, ParseFailure> SectionHeaderFactory::C
         headers.push_back(header);
 
         if (!isFileOk(fd))
-            return ResultFactory::CreateFailure<qvector<shared_ptr<SectionHeader>>>(FileReadError);
+            return ResultFactory::CreateFailure<vector<shared_ptr<SectionHeader>>>(FileReadError);
     }
 
     auto strtab = headers.at(elf->section_name_index);
@@ -44,10 +43,10 @@ Result<qvector<shared_ptr<SectionHeader>>, ParseFailure> SectionHeaderFactory::C
         it->contents = getContents(fd, it);
 
         if (!isFileOk(fd))
-            return ResultFactory::CreateFailure<qvector<shared_ptr<SectionHeader>>>(FileReadError);
+            return ResultFactory::CreateFailure<vector<shared_ptr<SectionHeader>>>(FileReadError);
     }
 
-    return ResultFactory::CreateSuccess<qvector<shared_ptr<SectionHeader>>, ParseFailure>(headers);
+    return ResultFactory::CreateSuccess<vector<shared_ptr<SectionHeader>>, ParseFailure>(headers);
 }
 
 bool SectionHeaderFactory::isFileOk(fstream &fd) {

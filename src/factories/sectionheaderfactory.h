@@ -4,7 +4,6 @@
 #include <fstream>
 #include <memory>
 
-#include "qvector.h"
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"
 #include "results/result.h"
@@ -21,7 +20,7 @@ class SectionHeaderFactory {
         static string getContents(fstream &fd, shared_ptr<SectionHeader> header);
 
     public:
-        static Result<qvector<shared_ptr<SectionHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
+        static Result<vector<shared_ptr<SectionHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
 };
 
 #endif

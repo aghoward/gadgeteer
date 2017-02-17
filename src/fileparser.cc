@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 
-#include "qvector.h"
 #include "fileparser.h"
 #include "binaryfile.h"
 #include "factories/elfheaderfactory.h"

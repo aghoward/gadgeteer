@@ -6,7 +6,7 @@
 #include <exception>
 
 #include "utils.h"
-#include "qvector.h"
+#include "queryalgorithms.h"
 #include "errorhandler.h"
 #include "handlers.h"
 
@@ -65,7 +65,8 @@ void printInformation(shared_ptr<BinaryFile> fileInfo, string toFind) {
     cout << "Total number of assemblies: " << assemblies.size() << endl;
     auto gadgets = GadgetFinder::FindAllGadgets(fileInfo, assemblies);
 
-    auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header->name; });
+    auto distinctHeaders = distinct<string>(gadgets, [] (auto header) { return header.header->name; });
+    /*auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header->name; });*/
 
     cout << "Found " << gadgets.size() << " matches" << endl;
     cout << "Found " << distinctHeaders.size() << " distinct header matches" << endl;

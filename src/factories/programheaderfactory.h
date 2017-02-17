@@ -4,7 +4,6 @@
 #include <fstream>
 #include <memory>
 
-#include "qvector.h"
 #include "headers/elfheader.h"
 #include "headers/programheader.h"
 #include "results/result.h"
@@ -20,7 +19,7 @@ class ProgramHeaderFactory {
         static shared_ptr<ProgramHeader> deserialize64(fstream &fd, ENDIANESS endianess);
 
     public:
-        static Result<qvector<shared_ptr<ProgramHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
+        static Result<vector<shared_ptr<ProgramHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
 };
 
 #endif

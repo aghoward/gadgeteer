@@ -1,7 +1,6 @@
 #include <fstream>
 #include <memory>
 
-#include "qvector.h"
 #include "programheaderfactory.h"
 #include "headers/programheader.h"
 #include "headers/elfheader.h"
@@ -13,20 +12,20 @@
 using namespace std;
 using namespace utils;
 
-Result<qvector<shared_ptr<ProgramHeader>>, ParseFailure> ProgramHeaderFactory::Create(fstream &fd, shared_ptr<ElfHeader> elf) {
-    auto headers = qvector<shared_ptr<ProgramHeader>>();
+Result<vector<shared_ptr<ProgramHeader>>, ParseFailure> ProgramHeaderFactory::Create(fstream &fd, shared_ptr<ElfHeader> elf) {
+    auto headers = vector<shared_ptr<ProgramHeader>>();
 
     for (auto i = 0; i < elf->program_entry_count; i++) {
         auto offset = elf->program_offset + (i * elf->program_entry_size);
         fd.seekg(offset);
         if (fd.bad() || fd.fail())
-            return ResultFactory::CreateFailure<qvector<shared_ptr<ProgramHeader>>>(FileReadError);
+            return ResultFactory::CreateFailure<vector<shared_ptr<ProgramHeader>>>(FileReadError);
 
         auto header = createSingle(fd, elf->bitness, elf->endianess);
         headers.push_back(header);
     }
 
-    return ResultFactory::CreateSuccess<qvector<shared_ptr<ProgramHeader>>, ParseFailure>(headers);
+    return ResultFactory::CreateSuccess<vector<shared_ptr<ProgramHeader>>, ParseFailure>(headers);
 }
 
 shared_ptr<ProgramHeader> ProgramHeaderFactory::deserialize32(fstream &fd, ENDIANESS endianess) {

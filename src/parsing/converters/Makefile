@@ -1,5 +1,5 @@
 GCC=g++
-FLAGS=--std=c++14 -I../../ -I../models
+FLAGS=--std=c++17 -fconcepts -I../../ -I../models
 
 objdir=./obj
 

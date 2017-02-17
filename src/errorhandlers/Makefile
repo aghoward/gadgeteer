@@ -1,6 +1,6 @@
 GCC=g++
 AR=ar
-FLAGS=--std=c++11
+FLAGS=--std=c++17 -fconcepts
 AR_FLAGS=rcs
 OBJDIR=./obj
 LIBDIR=./lib

@@ -1,5 +1,5 @@
 GCC=g++
-FLAGS=--std=c++14 
+FLAGS=--std=c++17 -fconcepts
 
 objdir=./obj
 

@@ -81,11 +81,9 @@ string SectionHeaderFactory::getContents(fstream &fd, shared_ptr<SectionHeader> 
 
     fd.seekg(header->file_offset);
     auto output = string();
-    char singleByte;
 
     for (auto i = 0; i < header->size; i++) {
-        fd >> singleByte;
-        output += singleByte;
+        output += (char)(fd.get() & 0xFF);
     }
 
     return output;

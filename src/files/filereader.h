@@ -27,6 +27,7 @@ class FileReader {
         }
 
         bool IsOk() const;
+        char ReadByte();
         unsigned long ReadBytes(size_t count, ENDIANESS endianess);
         std::string ReadString();
         void Seek(size_t position);

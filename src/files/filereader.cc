@@ -8,6 +8,10 @@ bool FileReader::IsOk() const {
     return !(m_fd.bad() || m_fd.fail());
 }
 
+char FileReader::ReadByte() {
+    return static_cast<char>(m_fd.get() & 0xFF);
+}
+
 unsigned long FileReader::ReadBytes(size_t count, ENDIANESS endianess) {
         unsigned long ret = 0;
         auto byteSize = 8;

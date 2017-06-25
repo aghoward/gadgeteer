@@ -1,26 +1,28 @@
-#ifndef SectionHeaderFactory_H
-#define SectionHeaderFactory_H
+#pragma once
 
 #include <fstream>
 #include <memory>
 
+#include "files/filereader.h"
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"
 #include "results/result.h"
 #include "failurereasons.h"
 #include "utils.h"
 
-using namespace std;
-
 class SectionHeaderFactory {
     private:
-        static bool isFileOk(fstream &fd);
-        static shared_ptr<SectionHeader> createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
-        static shared_ptr<SectionHeader> deserialize(fstream &fd, int wordSize, ENDIANESS endianess);
-        static string getContents(fstream &fd, shared_ptr<SectionHeader> header);
+        std::shared_ptr<FileReader> m_fileReader;
+
+        bool isFileOk(fstream &fd);
+        std::shared_ptr<SectionHeader> createSingle(BITNESS bitness, ENDIANESS endianess);
+        std::shared_ptr<SectionHeader> deserialize(int wordSize, ENDIANESS endianess);
+        string getName(std::shared_ptr<SectionHeader> header, unsigned long offset);
+        string getContents(std::shared_ptr<SectionHeader> header);
 
     public:
-        static Result<vector<shared_ptr<SectionHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
-};
+        SectionHeaderFactory() = delete;
+        SectionHeaderFactory(std::shared_ptr<FileReader> fileReader) : m_fileReader(fileReader) {};
 
-#endif
+        Result<std::vector<std::shared_ptr<SectionHeader>>, ParseFailure> Create(std::shared_ptr<ElfHeader> elf);
+};

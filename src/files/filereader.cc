@@ -40,6 +40,13 @@ std::string FileReader::ReadString() {
     return ret;
 }
 
+std::string FileReader::ReadString(size_t length) {
+    char cstr[length];
+    m_fd.get(cstr, length);
+    Seek(length);
+    return std::string(cstr);
+};
+
 void FileReader::Seek(size_t position) {
     m_fd.seekg(position);
 }

@@ -1,28 +1,28 @@
-#ifndef ElfHeaderFactory_H
-#define ElfHeaderFactory_H
+#pragma once
 
 #include <fstream>
 #include <memory>
 #include <string>
 
+#include "bitness.h"
+#include "endianess.h"
+#include "files/filereader.h"
 #include "headers/elfheader.h"
 #include "results/result.h"
 #include "failurereasons.h"
-#include "utils.h"
-
-using namespace std;
 
 class ElfHeaderFactory {
     private:
-        static string getIdentity(fstream &fd);
-        static bool magicBytesOk(string identity);
-        static void setBitness(shared_ptr<ElfHeader> elf);
-        static void setEndianess(shared_ptr<ElfHeader> elf);
-        static unsigned int getHalf(fstream &fd, BITNESS bitness, ENDIANESS endianess);
-        static unsigned long getWord(fstream &fd, BITNESS bitness, ENDIANESS endianess);
+        std::shared_ptr<FileReader> m_fileReader;
+
+        bool magicBytesOk(string identity);
+        void setBitness(std::shared_ptr<ElfHeader> elf);
+        void setEndianess(std::shared_ptr<ElfHeader> elf);
+        unsigned int getHalf(BITNESS bitness, ENDIANESS endianess);
+        unsigned long getWord(BITNESS bitness, ENDIANESS endianess);
 
     public:
-        static Result<shared_ptr<ElfHeader>, ParseFailure> Create(fstream &fd);
-};
+        ElfHeaderFactory(std::shared_ptr<FileReader> fileReader) : m_fileReader(fileReader) {};
 
-#endif
+        Result<std::shared_ptr<ElfHeader>, ParseFailure> Create();
+};

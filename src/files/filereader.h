@@ -30,5 +30,6 @@ class FileReader {
         char ReadByte();
         unsigned long ReadBytes(size_t count, ENDIANESS endianess);
         std::string ReadString();
+        std::string ReadString(size_t length);
         void Seek(size_t position);
 };

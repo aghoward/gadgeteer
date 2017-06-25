@@ -1,25 +1,26 @@
-#ifndef ProgramHeaderFactory_H
-#define ProgramHeaderFactory_H
+#pragma once
 
 #include <fstream>
 #include <memory>
 
+#include "bitness.h"
+#include "endianess.h"
+#include "files/filereader.h"
 #include "headers/elfheader.h"
 #include "headers/programheader.h"
 #include "results/result.h"
 #include "failurereasons.h"
-#include "utils.h"
-
-using namespace std;
 
 class ProgramHeaderFactory {
     private:
-        static shared_ptr<ProgramHeader> createSingle(fstream &fd, BITNESS bitness, ENDIANESS endianess);
-        static shared_ptr<ProgramHeader> deserialize32(fstream &fd, ENDIANESS endianess);
-        static shared_ptr<ProgramHeader> deserialize64(fstream &fd, ENDIANESS endianess);
+        std::shared_ptr<FileReader> m_fileReader;
+
+        std::shared_ptr<ProgramHeader> createSingle(BITNESS bitness, ENDIANESS endianess);
+        std::shared_ptr<ProgramHeader> deserialize32(ENDIANESS endianess);
+        std::shared_ptr<ProgramHeader> deserialize64(ENDIANESS endianess);
 
     public:
-        static Result<vector<shared_ptr<ProgramHeader>>, ParseFailure> Create(fstream &fd, shared_ptr<ElfHeader> elf);
-};
+        ProgramHeaderFactory(std::shared_ptr<FileReader> fileReader) : m_fileReader(fileReader) {};
 
-#endif
+        Result<std::vector<std::shared_ptr<ProgramHeader>>, ParseFailure> Create(std::shared_ptr<ElfHeader> elf);
+};

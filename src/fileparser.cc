@@ -1,4 +1,4 @@
-#include <fstream>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -11,51 +11,51 @@
 #include "results/result.h"
 #include "results/resultfactory.h"
 
-using namespace std;
+Result<std::shared_ptr<BinaryFile>, ParseFailure> FileParser::Create(std::string filename) {
+    auto fd = m_fileReaderFactory(filename);
+    if (!fd->IsOk())
+        return ResultFactory::CreateFailure<std::shared_ptr<BinaryFile>>(FileDoesNotExist);
 
-Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::Create(string filename) {
-    fstream fd(filename, ios::in | ios::binary);
-    if (!fd.is_open())
-        return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(FileDoesNotExist);
+    auto data = std::make_shared<BinaryFile>();
+    auto result = createElfHeader(fd, data);
 
-    auto data = shared_ptr<BinaryFile>(new BinaryFile());
-    auto result = FileParser::createElfHeader(fd, data);
-
-    fd.close();
     return result;
 }
 
-Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createElfHeader(fstream &fd, shared_ptr<BinaryFile> returnData) {
-    auto elfHeaderResult = ElfHeaderFactory::Create(fd);
-    return elfHeaderResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
-        [&fd, &returnData] (auto header) {
+Result<std::shared_ptr<BinaryFile>, ParseFailure> FileParser::createElfHeader(shared_ptr<FileReader> fd, std::shared_ptr<BinaryFile> returnData) {
+    auto elfHeaderFactory = m_elfHeaderFactoryFactory(fd);
+    auto elfHeaderResult = elfHeaderFactory->Create();
+    return elfHeaderResult.Match<Result<std::shared_ptr<BinaryFile>, ParseFailure>>(
+        [&] (auto header) {
             returnData->elf_header = header;
-            return FileParser::createProgramHeaders(fd, returnData);
+            return createProgramHeaders(fd, returnData);
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<std::shared_ptr<BinaryFile>>(failure); }
     );
 }
 
-Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createProgramHeaders(fstream &fd, shared_ptr<BinaryFile> returnData) {
-    auto parseResult = ProgramHeaderFactory::Create(fd, returnData->elf_header);
+Result<std::shared_ptr<BinaryFile>, ParseFailure> FileParser::createProgramHeaders(shared_ptr<FileReader> fd, std::shared_ptr<BinaryFile> returnData) {
+    auto programHeaderFactory = m_programHeaderFactoryFactory(fd);
+    auto parseResult = programHeaderFactory->Create(returnData->elf_header);
 
-    return parseResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
-        [&fd, &returnData] (auto headers) {
-            returnData->program_headers = headers; 
-            return FileParser::createSectionHeaders(fd, returnData); 
+    return parseResult.Match<Result<std::shared_ptr<BinaryFile>, ParseFailure>>(
+        [&] (auto headers) {
+            returnData->program_headers = headers;
+            return createSectionHeaders(fd, returnData); 
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<std::shared_ptr<BinaryFile>>(failure); }
     );
 }
 
-Result<shared_ptr<BinaryFile>, ParseFailure> FileParser::createSectionHeaders(fstream &fd, shared_ptr<BinaryFile> returnData) {
-    auto parseResult = SectionHeaderFactory::Create(fd, returnData->elf_header);
+Result<std::shared_ptr<BinaryFile>, ParseFailure> FileParser::createSectionHeaders(std::shared_ptr<FileReader> fd, std::shared_ptr<BinaryFile> returnData) {
+    auto sectionHeaderFactory = m_sectionHeaderFactoryFactory(fd);
+    auto parseResult = sectionHeaderFactory->Create(returnData->elf_header);
 
-    return parseResult.Match<Result<shared_ptr<BinaryFile>, ParseFailure>>(
+    return parseResult.Match<Result<std::shared_ptr<BinaryFile>, ParseFailure>>(
         [&returnData] (auto headers) { 
             returnData->section_headers = headers;
-            return ResultFactory::CreateSuccess<shared_ptr<BinaryFile>, ParseFailure>(returnData); 
+            return ResultFactory::CreateSuccess<std::shared_ptr<BinaryFile>, ParseFailure>(returnData); 
         },
-        [] (auto failure) { return ResultFactory::CreateFailure<shared_ptr<BinaryFile>>(failure); }
+        [] (auto failure) { return ResultFactory::CreateFailure<std::shared_ptr<BinaryFile>>(failure); }
     );
 }

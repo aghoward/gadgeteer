@@ -8,7 +8,6 @@
 #include "headers/sectionheader.h"
 #include "results/result.h"
 #include "failurereasons.h"
-#include "utils.h"
 
 class SectionHeaderFactory {
     private:

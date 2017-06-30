@@ -3,7 +3,8 @@
 #include <memory>
 #include <string>
 
-
+#include "bitness.h"
+#include "endianess.h"
 #include "files/filereader.h"
 #include "headers/elfheader.h"
 #include "headers/sectionheader.h"

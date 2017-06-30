@@ -22,6 +22,7 @@ class ElfHeaderFactory {
         unsigned long getWord(BITNESS bitness, ENDIANESS endianess);
 
     public:
+        ElfHeaderFactory() = delete;
         ElfHeaderFactory(std::shared_ptr<FileReader> fileReader) : m_fileReader(fileReader) {};
 
         Result<std::shared_ptr<ElfHeader>, ParseFailure> Create();

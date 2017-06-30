@@ -20,7 +20,7 @@ clean:
 	rm -f ${objects}
 	rm -Rf ${objdir} ${libdir}
 
-${objdir}/%.o: %.cc %.h
+${objdir}/%.o: %.cc %.h ${objdir}
 	$(GCC) ${FLAGS} -c $< -o $@ ${externallinks}
 
 ${libdir}/lib%.a: ${objects} 

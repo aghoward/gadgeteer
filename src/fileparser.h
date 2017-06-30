@@ -34,7 +34,6 @@ class FileParser {
             m_elfHeaderFactoryFactory(ehff),
             m_programHeaderFactoryFactory(phff),
             m_sectionHeaderFactoryFactory(shff) {};
-;
 
         Result<std::shared_ptr<BinaryFile>, ParseFailure> Create(std::string filename);
 };

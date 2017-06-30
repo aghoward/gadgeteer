@@ -6,7 +6,8 @@
 #include <sstream>
 #include <fstream>
 
-#include "utils.h"
+#include "bitness.h"
+#include "endianess.h"
 
 using namespace std;
 

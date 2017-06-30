@@ -2,11 +2,14 @@
 #include <fstream>
 #include <string>
 
-#include "utils.h"
+#include "bitness.h"
+#include "endianess.h"
 #include "elfheader.h"
 
-using namespace std;
+#include "utils.h"
 using namespace utils;
+
+using namespace std;
 
 string ElfHeader::toString() {
     auto ret = string();

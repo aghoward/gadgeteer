@@ -2,6 +2,7 @@
 #define QueryAlgorithms_H
 
 #include <algorithm>
+#include <vector>
 
 #include "concepts.h"
 
@@ -93,12 +94,13 @@ bool any(C & collection, P predicate) requires Container<C> && Predicate<P, V> {
     return false;
 }
 
+
 template<typename Vo, typename C, typename S, typename Vi = typename C::value_type>
 C distinct(C & collection, S selector) requires InsertableContainer<C> || PostInsertableContainer<C> && Selector<S, Vo, Vi> {
     auto ret = C();
 
     for (auto it : collection) {
-        if (!any(ret, [selector, it] (auto elem) { return selector(elem) == selector(it); }))
+        if (find_if(ret.begin(), ret.end(), [selector, it] (auto elem) { return selector(elem) == selector(it); }) == ret.end())
             insert(ret, last(ret), it);
     }
 

@@ -1,17 +1,19 @@
+#include <algorithm>
 #include <string>
+#include <vector>
 
 #include "assemblyparser.h"
-#include "qvector.h"
 #include "register.h"
 #include "opcode.h"
 #include "converter.h"
 #include "defaultconverter.h"
 #include "addregisterconverter.h"
+#include "queryalgorithms.h"
 
-AssemblyParser::AssemblyParser(qvector<Opcode> opcodes, qvector<Register> registers)
+AssemblyParser::AssemblyParser(vector<Opcode> opcodes, vector<Register> registers)
     : _opcodes(opcodes), _registers(registers)
 {
-    _converters = qvector<Converter*>();
+    _converters = vector<Converter*>();
     _converters.push_back(new DefaultConverter());
     _converters.push_back(new AddRegisterConverter());
 }
@@ -21,19 +23,19 @@ AssemblyParser::~AssemblyParser() {
         delete *it;
 }
 
-qvector<string> AssemblyParser::parseSingleOperation(string assemblyString) {
+vector<string> AssemblyParser::parseSingleOperation(string assemblyString) {
     auto operation = getOperationString(assemblyString);
 
-    auto opcode = _opcodes.first([operation] (auto oc) { return oc.name == operation; });
+    auto opcode = *find_if(_opcodes.begin(), _opcodes.end(), [operation] (auto oc) { return oc.name == operation; });    
 
     auto converterName = opcode.operation;
-    auto converter = _converters.first([converterName] (auto conv) { return conv->_function == converterName; });
+    auto converter = *find_if(_converters.begin(), _converters.end(), [converterName] (auto conv) { return conv->_function == converterName; });
 
     return converter->getBinaryFromAssembly(opcode, _registers, assemblyString);
 }
 
-qvector<string> AssemblyParser::getBinaryString(string assemblyString) {
-    auto ret = qvector<string>();
+vector<string> AssemblyParser::getBinaryString(string assemblyString) {
+    auto ret = vector<string>();
 
     auto allOperations = splitOperations(assemblyString);
     for (auto operationString : allOperations) {
@@ -44,8 +46,8 @@ qvector<string> AssemblyParser::getBinaryString(string assemblyString) {
     return ret;
 }
 
-qvector<string> AssemblyParser::crossProduct(qvector<string> a, qvector<string> b) {
-    auto ret = qvector<string>();
+vector<string> AssemblyParser::crossProduct(vector<string> a, vector<string> b) {
+    auto ret = vector<string>();
 
     if (a.empty())
         return b;
@@ -69,9 +71,9 @@ string AssemblyParser::getOperationString(string assembly) {
     return assembly.substr(0, operationIndex);
 }
 
-qvector<string> AssemblyParser::splitOperations(string assembly) {
+vector<string> AssemblyParser::splitOperations(string assembly) {
     char token = ';';
-    auto ret = qvector<string>();
+    auto ret = vector<string>();
     int curr = 0, next = assembly.find(token);
 
     while (curr < assembly.size() && (next = assembly.find(token, curr)) != string::npos) {

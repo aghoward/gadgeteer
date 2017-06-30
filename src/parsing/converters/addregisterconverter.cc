@@ -1,21 +1,24 @@
+#include <algorithm>
 #include <string>
+#include <vector>
 
 #include "addregisterconverter.h"
 #include "opcode.h"
 #include "register.h"
-#include "qvector.h"
 
 using namespace std;
 
-qvector<string> AddRegisterConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
-    auto ret = qvector<string>();
+vector<string> AddRegisterConverter::getBinaryFromAssembly(Opcode opcode, vector<Register> registers, string assembly) {
+    auto ret = vector<string>();
     auto baseValue = opcode.opcode;
     auto regName = getRegisterName(assembly);
     auto predicate = [regName] (Register r) { return r.name == regName; };
 
-    if (registers.any(predicate)) {
-        auto reg = registers.first(predicate);
-        ret.push_back(getValueForRegister(reg, baseValue));
+    auto reg = find_if(registers.begin(), registers.end(), predicate);
+    if (reg != registers.end()) {
+//    if (registers.any(predicate)) {
+//        auto reg = registers.first(predicate);
+        ret.push_back(getValueForRegister(*reg, baseValue));
     }
     else if (regName == "*") {
         for (auto& it : registers) {

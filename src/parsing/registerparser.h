@@ -1,9 +1,7 @@
-#ifndef RegisterParser_H
-#define RegisterParser_H
+#pragma once
 
 #include <vector>
 
-#include "qvector.h"
 #include "json.hpp"
 #include "register.h"
 
@@ -14,7 +12,5 @@ class RegisterParser {
     private:
         static Register parseSingle(json jsonData);
     public:
-        static qvector<Register> parse(json jsonData);
+        static vector<Register> parse(json jsonData);
 };
-
-#endif

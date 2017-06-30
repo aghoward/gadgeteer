@@ -1,9 +1,8 @@
-#ifndef OpcodeParser_H
-#define OpcodeParser_H
+#pragma once
 
 #include <string>
+#include <vector>
 
-#include "qvector.h"
 #include "opcode.h"
 #include "json.hpp"
 
@@ -15,10 +14,8 @@ class OpcodeParser {
         static Opcode parseSingle(json modelData);
         static int getOpcode(json jsonData);
         static string getOperation(json jsonData);
-        static qvector<int> getOperandSizes(json jsonData);
+        static vector<int> getOperandSizes(json jsonData);
 
     public:
-        static qvector<Opcode> parse(json jsonData);
+        static vector<Opcode> parse(json jsonData);
 };
-
-#endif

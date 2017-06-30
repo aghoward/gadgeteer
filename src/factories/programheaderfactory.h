@@ -20,6 +20,7 @@ class ProgramHeaderFactory {
         std::shared_ptr<ProgramHeader> deserialize64(ENDIANESS endianess);
 
     public:
+        ProgramHeaderFactory() = delete;
         ProgramHeaderFactory(std::shared_ptr<FileReader> fileReader) : m_fileReader(fileReader) {};
 
         Result<std::vector<std::shared_ptr<ProgramHeader>>, ParseFailure> Create(std::shared_ptr<ElfHeader> elf);

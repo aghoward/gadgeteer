@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+#include "endianess.h"
+
 class FileReader {
     private:
         std::fstream m_fd;

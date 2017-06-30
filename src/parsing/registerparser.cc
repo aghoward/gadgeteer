@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 
-#include "qvector.h"
 #include "json.hpp"
 #include "register.h"
 #include "registerparser.h"
@@ -9,8 +8,8 @@
 using namespace std;
 using json = nlohmann::json;
 
-qvector<Register> RegisterParser::parse(json jsonData) {
-    auto ret = qvector<Register>();
+vector<Register> RegisterParser::parse(json jsonData) {
+    auto ret = vector<Register>();
 
     for (auto it = jsonData.begin(); it != jsonData.end(); it++)
         ret.push_back(parseSingle(*it));

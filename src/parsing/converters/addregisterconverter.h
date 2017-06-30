@@ -1,9 +1,8 @@
-#ifndef AddRegisterConverter_H
-#define AddRegisterConverter_H
+#pragma once
 
 #include <string>
+#include <vector>
 
-#include "qvector.h"
 #include "opcode.h"
 #include "register.h"
 #include "converter.h"
@@ -18,8 +17,6 @@ class AddRegisterConverter : public Converter {
 
     public:
         AddRegisterConverter() : Converter("addRegister") {};
-        qvector<string> getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly);
+        vector<string> getBinaryFromAssembly(Opcode opcode, vector<Register> registers, string assembly);
 };
-
-#endif
 

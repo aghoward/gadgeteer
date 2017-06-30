@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 
-#include "qvector.h"
 #include "opcodeparser.h"
 #include "opcode.h"
 #include "json.hpp"
@@ -10,8 +9,8 @@
 using namespace std;
 using json = nlohmann::json;
 
-qvector<Opcode> OpcodeParser::parse(json jsonData) {
-    auto ret = qvector<Opcode>();
+vector<Opcode> OpcodeParser::parse(json jsonData) {
+    auto ret = vector<Opcode>();
 
     for (auto it = jsonData.begin(); it != jsonData.end(); it++)
         ret.push_back(parseSingle(*it));
@@ -39,8 +38,8 @@ string OpcodeParser::getOperation(json jsonData) {
     return jsonData["operation"];
 }
 
-qvector<int> OpcodeParser::getOperandSizes(json jsonData) {
-    auto sizes = qvector<int>();
+vector<int> OpcodeParser::getOperandSizes(json jsonData) {
+    auto sizes = vector<int>();
     if (jsonData.find("operandSizes") != jsonData.end())
         return sizes;
 

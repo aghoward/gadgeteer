@@ -1,12 +1,10 @@
-#ifndef AssemblyParserFactory_H
-#define AssemblyParserFactory_H
+#pragma once
 
 #include <string>
 
 #include "assemblyparser.h"
 #include "register.h"
 #include "opcode.h"
-#include "qvector.h"
 #include "json.hpp"
 
 using namespace std;
@@ -20,5 +18,3 @@ class AssemblyParserFactory {
     public:
         static AssemblyParser create(string opcodeFile, string registerFile);
 };
-
-#endif

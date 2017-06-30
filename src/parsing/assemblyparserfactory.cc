@@ -7,7 +7,6 @@
 #include "registerparser.h"
 #include "register.h"
 #include "opcode.h"
-#include "qvector.h"
 #include "json.hpp"
 
 using namespace std;

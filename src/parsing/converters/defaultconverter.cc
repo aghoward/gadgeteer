@@ -1,6 +1,5 @@
 #include <string>
 
-#include "qvector.h"
 #include "register.h"
 #include "opcode.h"
 #include "converter.h"
@@ -8,8 +7,8 @@
 
 using namespace std;
 
-qvector<string> DefaultConverter::getBinaryFromAssembly(Opcode opcode, qvector<Register> registers, string assembly) {
-    auto ret = qvector<string>();
+vector<string> DefaultConverter::getBinaryFromAssembly(Opcode opcode, vector<Register> registers, string assembly) {
+    auto ret = vector<string>();
     auto entry = string();
 
     entry += (char)(opcode.opcode);

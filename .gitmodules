@@ -1,0 +1,3 @@
+[submodule "src/cdif"]
+	path = src/cdif
+	url = git@github.com:aghoward/cdif.git

@@ -16,6 +16,9 @@
 #include "gadgetfinder.h"
 #include "assemblyparserfactory.h"
 
+#include "gadgeteermodule.h"
+#include "cdif/cdif.h"
+
 using namespace std;
 
 const string OPCODE_FILE = "opcodes.json";
@@ -33,7 +36,11 @@ int main(int argc, char * argv[]) {
     if (argc < 3)
         bail(string("Usage: ") + string(argv[0]) + string(" <elffile> <toFind>"));
 
-    auto result = FileParser::Create(argv[1]);
+    auto container = cdif::Container();
+    container.RegisterModule<GadgeteerModule>();
+    auto fileParser = container.Resolve<FileParser>();
+
+    auto result = fileParser.Create(argv[1]);
     auto toFind = string(argv[2]);
 
     result.Match<void>(
@@ -65,15 +72,9 @@ void printInformation(shared_ptr<BinaryFile> fileInfo, string toFind) {
     cout << "Total number of assemblies: " << assemblies.size() << endl;
     auto gadgets = GadgetFinder::FindAllGadgets(fileInfo, assemblies);
 
-    auto distinctHeaders = distinct<string>(gadgets, [] (auto header) { return header.header->name; });
-    /*auto distinctHeaders = gadgets.distinct<string>([] (auto header) { return header.header->name; });*/
-
     cout << "Found " << gadgets.size() << " matches" << endl;
-    cout << "Found " << distinctHeaders.size() << " distinct header matches" << endl;
-
-    for (auto header = distinctHeaders.begin(); header != distinctHeaders.end(); header++ )
+    for (auto header = gadgets.begin(); header != gadgets.end(); header++ )
         cout << header->header->name << ": " << to_hex(header->offset) << endl;
-
 }
 
 void bail(string message) {

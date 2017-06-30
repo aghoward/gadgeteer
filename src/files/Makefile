@@ -7,7 +7,7 @@ AR_FLAGS ?= rcs
 OBJDIR = ./obj
 LIBDIR = ./lib
 
-OBJECTS = ${OBJDIR}/filereader.o
+OBJECTS = ${OBJDIR}/filereader.o ${OBJDIR}/filesmodule.o
 LIBS = ${LIBDIR}/libfiles.a
 
 all: ${LIBDIR} ${LIBS}
